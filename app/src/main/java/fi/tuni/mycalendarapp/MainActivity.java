@@ -1,13 +1,17 @@
 package fi.tuni.mycalendarapp;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EventRepository eventRepository;
 
+    private CalendarView calendarView;
     private TextView txtTitle;
     private TextView txtContent;
 
@@ -29,21 +34,35 @@ public class MainActivity extends AppCompatActivity {
 
         eventRepository = EventRepository.getInstance();
 
+        calendarView = (CalendarView) findViewById(R.id.calendarView);
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtContent = (TextView) findViewById(R.id.txtContent);
 
-        showToday();
+        setupListeners();
+        updateEventInfo(new Date());
     }
 
-    private void showToday() {
+    private void setupListeners() {
 
-        List<Event> eventsToday = eventRepository.findByDate(new Date());
+        calendarView.setOnDateChangeListener((@NonNull CalendarView view, int year, int month, int dayOfMonth) -> {
+            Debug.printConsole(TAG, "setupListeners", "Day: " + dayOfMonth, 3);
+            Date selectedDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
+            updateEventInfo(selectedDate);
+        });
 
-        if(eventsToday.size() > 0) {
+    }
+
+    private void updateEventInfo(Date date) {
+
+        List<Event> eventsByDate = eventRepository.findByDate(date);
+
+        Debug.printConsole(TAG, "updateEventInfo", "eventsByDate: " + eventsByDate.size(), 1);
+
+        if(eventsByDate.size() > 0) {
 
             txtContent.setText("");
 
-            for(Event event : eventsToday) {
+            for(Event event : eventsByDate) {
                 txtContent.append(event.toString() + "\n");
             }
         } else {
@@ -60,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        showToday();
+        updateEventInfo(new Date());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

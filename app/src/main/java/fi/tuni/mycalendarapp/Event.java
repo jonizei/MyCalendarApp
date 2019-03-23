@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Event {
 
-    private static long idCounter = 0;
+    private static long numberOfEvents = 0;
 
     private long id;
     private String name;
@@ -17,7 +17,7 @@ public class Event {
     }
 
     public Event(String name, String description, Date date, Time time) {
-        this.id = idCounter++;
+        this.id = numberOfEvents++;
         this.name = name;
         this.description = description;
         this.date = date;

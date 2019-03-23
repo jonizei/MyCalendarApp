@@ -1,10 +1,14 @@
 package fi.tuni.mycalendarapp;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class EventRepository {
+
+    private static final String TAG = "EventRepository";
 
     private static EventRepository repository;
 
@@ -83,7 +87,7 @@ public class EventRepository {
         List<Event> tmpEventList = new ArrayList<>();
 
         for(Event event : eventList) {
-            if(name == event.getName()) {
+            if(name.equals(event.getName())) {
                 tmpEventList.add(event);
             }
         }
@@ -96,7 +100,8 @@ public class EventRepository {
         List<Event> tmpEventList = new ArrayList<>();
 
         for(Event event : eventList) {
-            if(date.equals(date)) {
+
+            if(compareDates(event.getDate(), date)) {
                 tmpEventList.add(event);
             }
         }
@@ -115,6 +120,31 @@ public class EventRepository {
         }
 
         return tmpEventList;
+    }
+
+    private boolean compareDates(Date d1, Date d2) {
+
+        Date a = getZeroTimeDate(d1);
+        Date b = getZeroTimeDate(d2);
+
+        if(a.compareTo(b) == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private Date getZeroTimeDate(Date date) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        date = calendar.getTime();
+
+        return date;
     }
 
 }
