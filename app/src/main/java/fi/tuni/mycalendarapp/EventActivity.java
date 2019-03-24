@@ -45,17 +45,25 @@ public class EventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
+        Bundle extras = getIntent().getExtras();
+
+        SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+
+        if(extras != null) {
+            eventDate = (Date) extras.get("date");
+        } else {
+            eventDate = new Date();
+        }
+
         eventRepository = EventRepository.getInstance();
+
+        eventTime = new Time(9,0);
 
         inputName = (EditText) findViewById(R.id.inputEventName);
         inputDesc = (EditText) findViewById(R.id.inputEventDesc);
         inputDate = (EditText) findViewById(R.id.inputDate);
         inputTime = (EditText) findViewById(R.id.inputTime);
 
-        eventDate = new Date();
-        eventTime = new Time(9,0);
-
-        SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
         inputDate.setText(f.format(eventDate));
         inputTime.setText(eventTime.toString());
         setListeners();

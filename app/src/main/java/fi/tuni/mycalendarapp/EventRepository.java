@@ -23,9 +23,9 @@ public class EventRepository {
 
     private EventRepository() {
         eventList = loadEvents();
-        eventList.add(new Event("Testi", "", new Date(), new Time(9, 0)));
-        eventList.add(new Event("Testi", "", new Date(), new Time(9, 0)));
-        eventList.add(new Event("Testi", "", new Date(), new Time(9, 0)));
+        eventList.add(new Event("Test", "Desc", new Date(), new Time(9, 0)));
+        eventList.add(new Event("Test2", "Desc2", new Date(), new Time(10, 0)));
+        eventList.add(new Event("Test3", "Desc3", new Date(), new Time(11, 0)));
     }
 
     public static EventRepository getInstance() {

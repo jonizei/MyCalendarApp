@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.TextView;
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtTitle;
     private TextView txtContent;
 
+    private Date selectedDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         Debug.loadDebug(this);
 
         eventRepository = EventRepository.getInstance();
+        selectedDate = new Date();
 
         calendarView = (CalendarView) findViewById(R.id.calendarView);
         txtTitle = (TextView) findViewById(R.id.txtTitle);
@@ -42,11 +48,36 @@ public class MainActivity extends AppCompatActivity {
         updateEventInfo(new Date());
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch(item.getItemId()) {
+            case (R.id.addEvent):
+                addEvent();
+                break;
+        }
+
+        return true;
+    }
+
     private void setupListeners() {
 
         calendarView.setOnDateChangeListener((@NonNull CalendarView view, int year, int month, int dayOfMonth) -> {
             Debug.printConsole(TAG, "setupListeners", "Day: " + dayOfMonth, 3);
-            Date selectedDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
+            selectedDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
             updateEventInfo(selectedDate);
         });
 
@@ -71,8 +102,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void addEvent(View v) {
+    public void addEvent() {
         Intent i = new Intent(this, EventActivity.class);
+        i.putExtra("date", selectedDate);
         startActivityForResult(i, REQUEST_CODE);
     }
 

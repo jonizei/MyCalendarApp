@@ -13,13 +13,6 @@
         android:layout_height="wrap_content">
     </CalendarView>
 
-    <Button
-        android:id="@+id/btnAddEvent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Event"
-        android:onClick="addEvent"/>
-
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="match_parent"

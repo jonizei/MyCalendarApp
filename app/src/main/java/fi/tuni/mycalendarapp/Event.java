@@ -61,7 +61,7 @@ public class Event {
     }
 
     public String toString() {
-        return time.toString() + " " + name;
+        return time.toString() + " " + name + ": " + description;
     }
 
 }
