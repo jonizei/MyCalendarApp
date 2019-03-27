@@ -126,4 +126,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void viewEvents(View v) {
+        Intent i = new Intent(this, EventListActivity.class);
+        startActivity(i);
+    }
 }
