@@ -1,47 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10sp">
 
     <TextView
-        android:id="@+id/eventTime"
-        android:layout_width="0sp"
-        android:layout_weight="0.3"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:paddingTop="5sp"
-        android:text="9:00"/>
+        android:id="@+id/eventType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:padding="5sp"/>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0sp"
-        android:layout_weight="0.5"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/eventName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="MyEvent"/>
-
-        <TextView
-            android:id="@+id/eventDesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:id="@+id/eventTime"
+            android:layout_width="0sp"
+            android:layout_weight="0.3"
+            android:layout_height="match_parent"
+            android:textSize="30sp"
             android:paddingTop="5sp"
-            android:text="MyDescription"/>
+            android:text="9:00"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0sp"
+            android:layout_weight="0.4"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/eventName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="MyEvent"/>
+
+            <TextView
+                android:id="@+id/eventDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:paddingTop="5sp"
+                android:text="MyDescription"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imgBtnEdit"
+            android:layout_width="0sp"
+            android:layout_weight="0.15"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_create"/>
+
+        <ImageButton
+            android:id="@+id/imgBtnDelete"
+            android:layout_width="0sp"
+            android:layout_weight="0.15"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_delete"/>
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/imgBtnDelete"
-        android:layout_width="0sp"
-        android:layout_weight="0.2"
-        android:layout_height="match_parent"
-        android:src="@drawable/img_delete"/>
 </LinearLayout>

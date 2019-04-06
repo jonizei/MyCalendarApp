@@ -1,5 +1,8 @@
 package fi.tuni.mycalendarapp;
 
+import android.content.ContentValues;
+import android.content.Context;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +14,8 @@ public class EventRepository {
     private static final String TAG = "EventRepository";
 
     private static EventRepository repository;
+    private EventDatabaseAdapter eventDatabaseAdapter;
+    private static Context context;
 
     public enum EventProperty {
         NAME,
@@ -22,10 +27,18 @@ public class EventRepository {
     private List<Event> eventList;
 
     private EventRepository() {
-        eventList = loadEvents();
-        eventList.add(new Event("Test", "Desc", new Date(), new Time(9, 0)));
-        eventList.add(new Event("Test2", "Desc2", new Date(), new Time(10, 0)));
-        eventList.add(new Event("Test3", "Desc3", new Date(), new Time(11, 0)));
+        eventDatabaseAdapter = new EventDatabaseAdapter(context);
+
+
+        /*
+        eventDatabaseAdapter.insertEvent(new Event("Test", "Desc", new Date(), new Time(), new EventType()));
+        eventDatabaseAdapter.insertEvent(new Event("Test2", "Desc2", new Date(), new Time(), new EventType("Urgent", "#f53c14")));
+        eventDatabaseAdapter.insertEvent(new Event("Test3", "Desc3", new Date(), new Time(), new EventType("Important", "#fc890e")));
+        eventDatabaseAdapter.insertEvent(new Event("Test4", "Desc4", new Date(), new Time(), new EventType("No hurry", "#1ee315")));
+         */
+
+
+        eventList = eventDatabaseAdapter.getAllEvents();
     }
 
     public static EventRepository getInstance() {
@@ -36,12 +49,16 @@ public class EventRepository {
         return repository;
     }
 
-    private List<Event> loadEvents() {
-        return new ArrayList<>();
+    public static void setContext(Context ctx) {
+        context = ctx;
     }
 
     public void save(Event event) {
-        eventList.add(event);
+        long tmpId = eventDatabaseAdapter.insertEvent(event);
+        if(tmpId != -1) {
+            event.setId(tmpId);
+            eventList.add(event);
+        }
     }
 
     public void update(Event event, EventProperty property) {
@@ -66,6 +83,11 @@ public class EventRepository {
                 break;
         }
 
+    }
+
+    public void delete(Event event) {
+        eventList.remove(event);
+        eventDatabaseAdapter.deleteEvent(event.getId());
     }
 
     public Event findById(long id) {
@@ -145,6 +167,10 @@ public class EventRepository {
         date = calendar.getTime();
 
         return date;
+    }
+
+    public void close() {
+        eventDatabaseAdapter.close();
     }
 
 }

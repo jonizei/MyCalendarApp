@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Debug.loadDebug(this);
 
+        eventRepository.setContext(this);
         eventRepository = EventRepository.getInstance();
         selectedDate = new Date();
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addEvent() {
         Intent i = new Intent(this, EventActivity.class);
+        i.putExtra("mode", "create");
         i.putExtra("date", selectedDate);
         startActivityForResult(i, REQUEST_CODE);
     }
@@ -130,5 +132,11 @@ public class MainActivity extends AppCompatActivity {
     public void viewEvents(View v) {
         Intent i = new Intent(this, EventListActivity.class);
         startActivity(i);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        eventRepository.close();
     }
 }

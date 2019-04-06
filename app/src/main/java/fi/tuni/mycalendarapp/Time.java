@@ -57,4 +57,33 @@ public class Time {
 
         return strHour + ":" + strMin;
     }
+
+    public static Time parse(String s) {
+        Time time = new Time();
+        String[] tokens = s.split(":");
+
+        if(tokens.length == 2) {
+            time.setHours(parseStr(tokens[0]));
+            time.setMinutes(parseStr(tokens[1]));
+        }
+
+        return time;
+    }
+
+    private static int parseStr(String s) {
+
+        int value = 0;
+
+        if(s.equals("00")) {
+            value = 0;
+        }
+        else if(s.charAt(0) == '0' && s.charAt(1) != '0') {
+            value = Integer.parseInt("" + s.charAt(1));
+        }
+        else {
+            value = Integer.parseInt(s);
+        }
+
+        return value;
+    }
 }

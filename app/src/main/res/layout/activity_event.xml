@@ -69,6 +69,31 @@
 
     </TableLayout>
 
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/showColor"
+                android:layout_width="0sp"
+                android:layout_weight="0.2"
+                android:layout_height="match_parent"/>
+
+            <Button
+                android:id="@+id/inputColor"
+                android:layout_width="0sp"
+                android:layout_weight="0.8"
+                android:layout_height="match_parent"
+                android:text="Default"/>
+
+        </TableRow>
+
+    </TableLayout>
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="20sp" />
