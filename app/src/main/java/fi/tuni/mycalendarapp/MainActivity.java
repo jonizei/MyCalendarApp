@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK) {
-            Bundle bundle = data.getExtras();
             boolean status = data.getBooleanExtra("status", false);
 
             if(status) {
@@ -131,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void viewEvents(View v) {
         Intent i = new Intent(this, EventListActivity.class);
+        i.putExtra("date", selectedDate);
         startActivity(i);
     }
 

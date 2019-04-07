@@ -126,4 +126,20 @@ public class EventDatabaseAdapter {
         return eventList;
     }
 
+    public void update(Event event) {
+
+        ContentValues newValues = new ContentValues();
+        newValues.put("NAME", event.getName());
+        newValues.put("DESCRIPTION", event.getDescription());
+        newValues.put("DATE", dateFormat.format(event.getDate()));
+        newValues.put("TIME", event.getTime().toString());
+        newValues.put("LABEL_NAME", event.getEventType().getName());
+        newValues.put("LABEL_COLOR", event.getEventType().getColorCode());
+
+        String where = "ID=?";
+        database = dbHelper.getWritableDatabase();
+        database.update("EVENT_DATA", newValues, where, new String[]{"" + event.getId()});
+
+    }
+
 }

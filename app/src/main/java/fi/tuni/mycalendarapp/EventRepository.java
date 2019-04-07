@@ -3,6 +3,7 @@ package fi.tuni.mycalendarapp;
 import android.content.ContentValues;
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,13 +18,6 @@ public class EventRepository {
     private EventDatabaseAdapter eventDatabaseAdapter;
     private static Context context;
 
-    public enum EventProperty {
-        NAME,
-        DESCRIPTION,
-        DATE,
-        TIME
-    }
-
     private List<Event> eventList;
 
     private EventRepository() {
@@ -36,7 +30,6 @@ public class EventRepository {
         eventDatabaseAdapter.insertEvent(new Event("Test3", "Desc3", new Date(), new Time(), new EventType("Important", "#fc890e")));
         eventDatabaseAdapter.insertEvent(new Event("Test4", "Desc4", new Date(), new Time(), new EventType("No hurry", "#1ee315")));
          */
-
 
         eventList = eventDatabaseAdapter.getAllEvents();
     }
@@ -61,26 +54,18 @@ public class EventRepository {
         }
     }
 
-    public void update(Event event, EventProperty property) {
+    public void update(Event event) {
 
         Event tmpEvent = findById(event.getId());
+        Debug.printConsole(TAG, "update", "EventId: " + event.getId(), 1);
 
-        switch (property) {
-            case NAME:
-                tmpEvent.setName(event.getName());
-                break;
-
-            case DESCRIPTION:
-                tmpEvent.setDescription(event.getDescription());
-                break;
-
-            case DATE:
-                tmpEvent.setDate(event.getDate());
-                break;
-
-            case TIME:
-                tmpEvent.setTime(event.getTime());
-                break;
+        if(tmpEvent != null) {
+            tmpEvent.setName(event.getName());
+            tmpEvent.setDescription(event.getDescription());
+            tmpEvent.setDate(event.getDate());
+            tmpEvent.setTime(event.getTime());
+            tmpEvent.setEventType(event.getEventType());
+            eventDatabaseAdapter.update(event);
         }
 
     }

@@ -35,6 +35,7 @@ public class EventActivity extends AppCompatActivity {
     private EditText inputTime;
     private TextView showColor;
     private Button inputColor;
+    private Button btnSave;
 
     private Dialog dialog;
 
@@ -55,7 +56,7 @@ public class EventActivity extends AppCompatActivity {
 
     private Mode currentMode = Mode.CREATE;
 
-    private Event eventObject;
+    private Event eventObject = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +69,16 @@ public class EventActivity extends AppCompatActivity {
 
         SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
 
+        eventDate = new Date();
+
         if(extras != null) {
-            //eventDate = (Date) extras.get("date");
-            eventDate = new Date();
-        } else {
-            eventDate = new Date();
+            if(extras.getString("mode").equals("create")) {
+                currentMode = Mode.CREATE;
+                eventDate = (Date) extras.get("date");
+            } else if(extras.getString("mode").equals("edit")) {
+                eventObject = extras.getParcelable("event");
+                currentMode = Mode.EDIT;
+            }
         }
 
         eventRepository = EventRepository.getInstance();
@@ -83,6 +89,7 @@ public class EventActivity extends AppCompatActivity {
         inputTime = (EditText) findViewById(R.id.inputTime);
         showColor = (TextView) findViewById(R.id.showColor);
         inputColor = (Button) findViewById(R.id.inputColor);
+        btnSave = (Button) findViewById(R.id.btnSave);
 
         eventTime = new Time(9,0);
         eventType = new EventType();
@@ -96,6 +103,17 @@ public class EventActivity extends AppCompatActivity {
             showColor.setBackgroundColor(Color.parseColor(eventObject.getEventType().getColorCode()));
             inputColor.setText(eventObject.getEventType().getName());
          */
+
+        if(currentMode == Mode.EDIT) {
+            inputName.setText(eventObject.getName());
+            inputDesc.setText(eventObject.getDescription());
+            eventDate = eventObject.getDate();
+            eventTime = eventObject.getTime();
+            showColor.setBackgroundColor(Color.parseColor(eventObject.getEventType().getColorCode()));
+            inputColor.setText(eventObject.getEventType().getName());
+            btnSave.setText("Update");
+            eventType = eventObject.getEventType();
+        }
 
         inputDate.setText(f.format(eventDate));
         inputTime.setText(eventTime.toString());
@@ -122,6 +140,9 @@ public class EventActivity extends AppCompatActivity {
             pickColor();
         });
 
+        btnSave.setOnClickListener((View v) -> {
+            saveEvent();
+        });
     }
 
     public void pickDate() {
@@ -225,14 +246,21 @@ public class EventActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    public void saveEvent(View v) {
+    public void saveEvent() {
         Event tmpEvent = new Event();
         tmpEvent.setName(inputName.getText().toString());
         tmpEvent.setDescription(inputDesc.getText().toString());
         tmpEvent.setDate(eventDate);
         tmpEvent.setTime(eventTime);
         tmpEvent.setEventType(eventType);
-        eventRepository.save(tmpEvent);
+
+        if(currentMode == Mode.CREATE) {
+            eventRepository.save(tmpEvent);
+        } else if(currentMode == Mode.EDIT) {
+            tmpEvent.setId(eventObject.getId());
+            eventRepository.update(tmpEvent);
+        }
+
         goBack(true);
     }
 
