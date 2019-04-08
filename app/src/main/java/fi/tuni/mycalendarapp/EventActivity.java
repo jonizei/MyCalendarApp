@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.support.v4.app.DialogFragment;
@@ -93,16 +95,6 @@ public class EventActivity extends AppCompatActivity {
 
         eventTime = new Time(9,0);
         eventType = new EventType();
-
-        /*
-        inputName.setText(eventObject.getName());
-            inputDesc.setText(eventObject.getDescription());
-            eventDate = eventObject.getDate();
-            eventTime = eventObject.getTime();
-            eventType = eventObject.getEventType();
-            showColor.setBackgroundColor(Color.parseColor(eventObject.getEventType().getColorCode()));
-            inputColor.setText(eventObject.getEventType().getName());
-         */
 
         if(currentMode == Mode.EDIT) {
             inputName.setText(eventObject.getName());
@@ -205,40 +197,38 @@ public class EventActivity extends AppCompatActivity {
                 dialog.dismiss();
             });
         } else if(type == DialogType.COLOR) {
+            View v = LayoutInflater.from(this).inflate(R.layout.dialog_typepicker, null);
+
+            List<EventType> eventTypeList = new ArrayList<>();
+            eventTypeList.add(new EventType("Default", "#ffffff"));
+            eventTypeList.add(new EventType("Urgent", "#f53c14"));
+            eventTypeList.add(new EventType("Important", "#fc890e"));
+            eventTypeList.add(new EventType("No hurry", "#1ee315"));
+
+            ListView eventTypeListView = (ListView) v.findViewById(R.id.typePick);
+
+            EventTypesAdapter adapter = new EventTypesAdapter(this, eventTypeList);
+            eventTypeListView.setAdapter(adapter);
+
+            eventTypeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    eventType = (EventType) parent.getItemAtPosition(position);
+                }
+            });
 
             builder.setTitle("Choose color:");
+            builder.setView(v);
 
-            builder.setItems(new String[]{"Default", "Urgent", "Important", "No hurry"}, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
 
-                    switch (which) {
+            builder.setPositiveButton("OK", (DialogInterface dialog, int id) -> {
+                showColor.setBackgroundColor(Color.parseColor(eventType.getColorCode()));
+                inputColor.setText(eventType.getName());
+                dialog.dismiss();
+            });
 
-                        case 0:
-                            eventType.setColorCode("#ffffff");
-                            eventType.setName("Default");
-                            break;
-
-                        case 1:
-                            eventType.setColorCode("#f53c14");
-                            eventType.setName("Urgent");
-                            break;
-
-                        case 2:
-                            eventType.setColorCode("#fc890e");
-                            eventType.setName("Important");
-                            break;
-
-                        case 3:
-                            eventType.setColorCode("#1ee315");
-                            eventType.setName("No hurry");
-                            break;
-                    }
-
-                    showColor.setBackgroundColor(Color.parseColor(eventType.getColorCode()));
-                    inputColor.setText(eventType.getName());
-
-                }
+            builder.setNegativeButton("Cancel", (DialogInterface dialog, int id) -> {
+                dialog.dismiss();
             });
 
         }

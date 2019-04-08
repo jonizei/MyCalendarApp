@@ -70,6 +70,10 @@ public class EventRepository {
 
     }
 
+    public List<Event> fetchAll() {
+        return eventList;
+    }
+
     public void delete(Event event) {
         eventList.remove(event);
         eventDatabaseAdapter.deleteEvent(event.getId());

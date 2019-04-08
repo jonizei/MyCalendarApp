@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CalendarView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private EventRepository eventRepository;
 
     private CalendarView calendarView;
-    private TextView txtTitle;
-    private TextView txtContent;
+    private ListView listDailyEvents;
 
     private Date selectedDate;
 
@@ -42,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
         selectedDate = new Date();
 
         calendarView = (CalendarView) findViewById(R.id.calendarView);
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtContent = (TextView) findViewById(R.id.txtContent);
+        listDailyEvents = (ListView) findViewById(R.id.listDailyEvents);
 
         setupListeners();
         updateEventInfo(new Date());
@@ -88,18 +88,10 @@ public class MainActivity extends AppCompatActivity {
 
         List<Event> eventsByDate = eventRepository.findByDate(date);
 
+        DailyEventsAdapter adapter = new DailyEventsAdapter(this, eventsByDate);
+        listDailyEvents.setAdapter(adapter);
+
         Debug.printConsole(TAG, "updateEventInfo", "eventsByDate: " + eventsByDate.size(), 1);
-
-        if(eventsByDate.size() > 0) {
-
-            txtContent.setText("");
-
-            for(Event event : eventsByDate) {
-                txtContent.append(event.toString() + "\n");
-            }
-        } else {
-            txtContent.setText("No events");
-        }
 
     }
 
@@ -113,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        updateEventInfo(new Date());
+        updateEventInfo(selectedDate);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
