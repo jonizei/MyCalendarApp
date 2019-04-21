@@ -7,11 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/txtWeekNumber"
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="0.05"
+        android:textSize="25sp"
+        android:text="Week: "/>
+
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="0.6">
+        android:layout_weight="0.55"
+        android:firstDayOfWeek="2">
     </CalendarView>
 
     <LinearLayout

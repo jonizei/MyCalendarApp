@@ -14,11 +14,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,10 +34,12 @@ public class MainActivity extends AppCompatActivity {
     private EventRepository eventRepository;
     private MyNotificationHandler notificationHandler;
 
+    private TextView txtWeekNumber;
     private CalendarView calendarView;
     private ListView listDailyEvents;
 
     private LocalDate selectedDate;
+    private int selectedWeek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         selectedDate = LocalDate.now();
 
+        txtWeekNumber = (TextView) findViewById(R.id.txtWeekNumber);
         calendarView = (CalendarView) findViewById(R.id.calendarView);
         listDailyEvents = (ListView) findViewById(R.id.listDailyEvents);
 
         setupListeners();
         updateEventInfo(selectedDate);
+        updateWeekNumber(selectedDate);
     }
 
     @Override
@@ -87,12 +96,16 @@ public class MainActivity extends AppCompatActivity {
             selectedDate = LocalDate.of(year, month + 1, dayOfMonth);
             Debug.printConsole(TAG, "setOnChangeListener", "Changed: " + selectedDate.toString(), 2);
             updateEventInfo(selectedDate);
+            updateWeekNumber(selectedDate);
         });
 
     }
 
-    private void updateWeekNumber() {
-
+    private void updateWeekNumber(LocalDate date) {
+        TemporalField woy = WeekFields.of(Locale.GERMAN).weekOfWeekBasedYear();
+        selectedWeek = date.get(woy);
+        Debug.printConsole(TAG, "updateWeekNumber", "WeekNumber: " + selectedWeek, 1);
+        txtWeekNumber.setText("Week: " + selectedWeek);
     }
 
     private void updateEventInfo(LocalDate date) {
