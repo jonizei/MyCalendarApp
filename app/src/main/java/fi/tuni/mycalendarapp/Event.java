@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Event implements Parcelable {
@@ -12,15 +14,15 @@ public class Event implements Parcelable {
     private long id;
     private String name;
     private String description;
-    private Date date;
-    private Time time;
+    private LocalDate date;
+    private LocalTime time;
     private EventType eventType;
 
     public Event() {
         eventType = new EventType();
     }
 
-    public Event(String name, String description, Date date, Time time, EventType eventType) {
+    public Event(String name, String description, LocalDate date, LocalTime time, EventType eventType) {
         this.name = name;
         this.description = description;
         this.date = date;
@@ -38,12 +40,12 @@ public class Event implements Parcelable {
         this.description = data[2];
 
         try {
-            this.date = f.parse(data[3]);
+            this.date = LocalDate.parse(data[3]);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        this.time = Time.parse(data[4]);
+        this.time = LocalTime.parse(data[4]);
         this.eventType = new EventType(data[5], data[6]);
     }
 
@@ -54,9 +56,8 @@ public class Event implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
 
-        dest.writeStringArray(new String[]{"" + this.id, this.name, this.description, f.format(this.date), this.time.toString(), this.eventType.getName(), this.eventType.getColorCode()});
+        dest.writeStringArray(new String[]{"" + this.id, this.name, this.description, this.date.toString(), this.time.toString(), this.eventType.getName(), this.eventType.getColorCode()});
     }
 
     public void setId(long id) {
@@ -71,11 +72,11 @@ public class Event implements Parcelable {
         this.description = description;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public void setTime(Time time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
@@ -95,11 +96,11 @@ public class Event implements Parcelable {
         return description;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public Time getTime() {
+    public LocalTime getTime() {
         return time;
     }
 

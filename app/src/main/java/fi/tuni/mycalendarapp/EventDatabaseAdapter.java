@@ -7,6 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +63,7 @@ public class EventDatabaseAdapter {
             ContentValues newValues = new ContentValues();
             newValues.put("NAME", event.getName());
             newValues.put("DESCRIPTION", event.getDescription());
-            newValues.put("DATE", dateFormat.format(event.getDate()));
+            newValues.put("DATE", event.getDate().toString());
             newValues.put("TIME", event.getTime().toString());
             newValues.put("LABEL_NAME", event.getEventType().getName());
             newValues.put("LABEL_COLOR", event.getEventType().getColorCode());
@@ -102,16 +104,16 @@ public class EventDatabaseAdapter {
             tmpEvent.setId(Integer.parseInt(c.getString(c.getColumnIndex("ID"))));
             tmpEvent.setName(c.getString(c.getColumnIndex("NAME")));
             tmpEvent.setDescription(c.getString(c.getColumnIndex("DESCRIPTION")));
-            Date tmpDate = new Date();
+            LocalDate tmpDate = LocalDate.now();
 
             try {
-                tmpDate = dateFormat.parse(c.getString(c.getColumnIndex("DATE")));
+                tmpDate = LocalDate.parse(c.getString(c.getColumnIndex("DATE")));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             tmpEvent.setDate(tmpDate);
-            Time tmpTime = Time.parse(c.getString(c.getColumnIndex("TIME")));
+            LocalTime tmpTime = LocalTime.parse(c.getString(c.getColumnIndex("TIME")));
             tmpEvent.setTime(tmpTime);
 
             EventType tmpEventType = new EventType();
@@ -131,7 +133,7 @@ public class EventDatabaseAdapter {
         ContentValues newValues = new ContentValues();
         newValues.put("NAME", event.getName());
         newValues.put("DESCRIPTION", event.getDescription());
-        newValues.put("DATE", dateFormat.format(event.getDate()));
+        newValues.put("DATE", event.getDate().toString());
         newValues.put("TIME", event.getTime().toString());
         newValues.put("LABEL_NAME", event.getEventType().getName());
         newValues.put("LABEL_COLOR", event.getEventType().getColorCode());

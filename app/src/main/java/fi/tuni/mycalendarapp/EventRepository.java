@@ -106,13 +106,16 @@ public class EventRepository {
         return tmpEventList;
     }
 
-    public List<Event> findByDate(Date date) {
+    public List<Event> findByDate(LocalDate date) {
 
         List<Event> tmpEventList = new ArrayList<>();
 
         for(Event event : eventList) {
 
-            if(compareDates(event.getDate(), date)) {
+            Debug.printConsole(TAG, "findByDate", "LocalDate: " + date, 2);
+            Debug.printConsole(TAG, "findByDate", "EventDate: " + event.getDate(), 2);
+
+            if(event.getDate().equals(date)) {
                 tmpEventList.add(event);
             }
         }
@@ -131,31 +134,6 @@ public class EventRepository {
         }
 
         return tmpEventList;
-    }
-
-    private boolean compareDates(Date d1, Date d2) {
-
-        Date a = getZeroTimeDate(d1);
-        Date b = getZeroTimeDate(d2);
-
-        if(a.compareTo(b) == 0) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private Date getZeroTimeDate(Date date) {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        date = calendar.getTime();
-
-        return date;
     }
 
     public void close() {

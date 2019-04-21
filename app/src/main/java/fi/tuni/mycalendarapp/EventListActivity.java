@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class EventListActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
 
     private EventRepository eventRepository;
-    private Date selectedDate;
+    private LocalDate selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +28,13 @@ public class EventListActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        selectedDate = new Date();
+        selectedDate = LocalDate.now();
 
         if(extras != null) {
-            selectedDate = (Date) extras.get("date");
+            selectedDate = (LocalDate) extras.get("date");
         }
 
+        EventRepository.setContext(this);
         eventRepository = EventRepository.getInstance();
 
         updateList();

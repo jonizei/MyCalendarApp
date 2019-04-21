@@ -1,5 +1,8 @@
 package fi.tuni.mycalendarapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
@@ -20,16 +23,24 @@ import android.widget.TimePicker;
 import android.support.v4.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class EventActivity extends AppCompatActivity {
 
     private final String TAG = "EventActivity";
 
     private EventRepository eventRepository;
+
+    private static int NOTIFICATION_REQ_CODE = 10;
+    private static int notificationCounter = 1;
 
     private EditText inputName;
     private EditText inputDesc;
@@ -38,18 +49,21 @@ public class EventActivity extends AppCompatActivity {
     private TextView showColor;
     private Button inputColor;
     private Button btnSave;
+    private EditText inputReminder;
 
     private Dialog dialog;
 
     private enum DialogType {
         DATE,
         TIME,
-        COLOR
+        COLOR,
+        REMINDER
     }
 
-    private Date eventDate;
-    private Time eventTime;
+    private LocalDate eventDate;
+    private LocalTime eventTime;
     private EventType eventType;
+    private LocalDateTime remindTime;
 
     public enum Mode {
         CREATE,
@@ -70,13 +84,14 @@ public class EventActivity extends AppCompatActivity {
         Debug.printConsole(TAG, "onCreate", "onCreate called", 1);
 
         SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ROOT);
 
-        eventDate = new Date();
+        eventDate = LocalDate.now();
 
         if(extras != null) {
             if(extras.getString("mode").equals("create")) {
                 currentMode = Mode.CREATE;
-                eventDate = (Date) extras.get("date");
+                eventDate = (LocalDate) extras.get("date");
             } else if(extras.getString("mode").equals("edit")) {
                 eventObject = extras.getParcelable("event");
                 currentMode = Mode.EDIT;
@@ -92,8 +107,9 @@ public class EventActivity extends AppCompatActivity {
         showColor = (TextView) findViewById(R.id.showColor);
         inputColor = (Button) findViewById(R.id.inputColor);
         btnSave = (Button) findViewById(R.id.btnSave);
+        inputReminder = (EditText) findViewById(R.id.inputReminder);
 
-        eventTime = new Time(9,0);
+        eventTime = LocalTime.parse("09:00");
         eventType = new EventType();
 
         if(currentMode == Mode.EDIT) {
@@ -107,7 +123,7 @@ public class EventActivity extends AppCompatActivity {
             eventType = eventObject.getEventType();
         }
 
-        inputDate.setText(f.format(eventDate));
+        inputDate.setText(eventDate.toString());
         inputTime.setText(eventTime.toString());
         setListeners();
     }
@@ -125,6 +141,13 @@ public class EventActivity extends AppCompatActivity {
             if(hasFocus) {
                 pickTime();
                 inputTime.clearFocus();
+            }
+        });
+
+        inputReminder.setOnFocusChangeListener((View view, boolean hasFocus) -> {
+            if(hasFocus) {
+                pickReminder();
+                inputReminder.clearFocus();
             }
         });
 
@@ -155,6 +178,12 @@ public class EventActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void pickReminder() {
+        Debug.printConsole(TAG, "pickReminder", "pickReminder called", 1);
+        dialog = createDialog(DialogType.REMINDER);
+        dialog.show();
+    }
+
     public Dialog createDialog(DialogType type) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -171,9 +200,8 @@ public class EventActivity extends AppCompatActivity {
                 int year = datePicker.getYear();
                 int mon = datePicker.getMonth();
                 int day = datePicker.getDayOfMonth();
-                eventDate = new GregorianCalendar(year, mon, day).getTime();
-                SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
-                inputDate.setText(f.format(eventDate));
+                eventDate = LocalDate.of(year, mon, day);
+                inputDate.setText(eventDate.toString());
                 dialog.dismiss();
             });
             builder.setNegativeButton("Cancel", (DialogInterface dialog, int id) -> {
@@ -184,12 +212,16 @@ public class EventActivity extends AppCompatActivity {
 
             TimePicker timePicker = (TimePicker) v.findViewById(R.id.timePick);
 
+            timePicker.setIs24HourView(true);
+            timePicker.setHour(eventTime.getHour());
+            timePicker.setMinute(eventTime.getMinute());
+
             builder.setTitle("Pick Time:");
             builder.setView(v);
             builder.setPositiveButton("Ok", (DialogInterface dialog, int id) -> {
                 int hours = timePicker.getHour();
                 int minutes = timePicker.getMinute();
-                eventTime = new Time(hours, minutes);
+                eventTime = LocalTime.of(hours, minutes);
                 inputTime.setText(eventTime.toString());
                 dialog.dismiss();
             });
@@ -231,6 +263,71 @@ public class EventActivity extends AppCompatActivity {
                 dialog.dismiss();
             });
 
+        } else if(type == DialogType.REMINDER) {
+
+            String[] reminderList = new String[] {
+                "No reminder",
+                "1 hour",
+                "2 hours",
+                "3 hours",
+                "1 day",
+                "2 days",
+                "3 days",
+                "1 week"
+            };
+
+            builder.setTitle("Choose reminder");
+            builder.setItems(reminderList, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    LocalDateTime tmpDateTime = LocalDateTime.of(eventDate, eventTime);
+
+                    switch(which) {
+                        case 0:
+                            remindTime = null;
+                            inputReminder.setText(reminderList[0]);
+                            break;
+
+                        case 1:
+                            remindTime = tmpDateTime.minusHours(1);
+                            inputReminder.setText(reminderList[1]);
+                            break;
+
+                        case 2:
+                            remindTime = tmpDateTime.minusHours(2);
+                            inputReminder.setText(reminderList[2]);
+                            break;
+
+                        case 3:
+                            remindTime = tmpDateTime.minusHours(3);
+                            inputReminder.setText(reminderList[3]);
+                            break;
+
+                        case 4:
+                            remindTime = tmpDateTime.minusDays(1);
+                            inputReminder.setText(reminderList[4]);
+                            break;
+
+                        case 5:
+                            remindTime = tmpDateTime.minusDays(2);
+                            inputReminder.setText(reminderList[5]);
+                            break;
+
+                        case 6:
+                            remindTime = tmpDateTime.minusDays(3);
+                            inputReminder.setText(reminderList[6]);
+                            break;
+
+                        case 7:
+                            remindTime = tmpDateTime.minusWeeks(1);
+                            inputReminder.setText(reminderList[7]);
+                            break;
+                    }
+
+                }
+            });
+
         }
 
         return builder.create();
@@ -243,6 +340,12 @@ public class EventActivity extends AppCompatActivity {
         tmpEvent.setDate(eventDate);
         tmpEvent.setTime(eventTime);
         tmpEvent.setEventType(eventType);
+
+        if(remindTime != null) {
+            Debug.printConsole(TAG, "saveEvent", "Event: " + tmpEvent.getName(), 2);
+            MyReminder reminder = new MyReminder(tmpEvent, remindTime.getHour(), remindTime.getMinute(), remindTime.getDayOfYear());
+            createReminder(reminder);
+        }
 
         if(currentMode == Mode.CREATE) {
             eventRepository.save(tmpEvent);
@@ -265,6 +368,29 @@ public class EventActivity extends AppCompatActivity {
     public void onBackPressed() {
         goBack(false);
         super.onBackPressed();
+    }
+
+    private void createReminder(MyReminder reminder) {
+        Intent notifyIntent = new Intent(this, MyReminderReceiver.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("event", reminder.getEvent());
+        notifyIntent.putExtra("KEY_TODO", bundle);
+        notifyIntent.putExtra("KEY_ID", notificationCounter);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQ_CODE + notificationCounter, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        notificationCounter++;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, reminder.getMinute());
+        calendar.set(Calendar.HOUR_OF_DAY, reminder.getHour());
+        calendar.set(Calendar.DAY_OF_YEAR, reminder.getDayOfTheYear());
+
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
 }

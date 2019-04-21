@@ -67,6 +67,22 @@
                 android:hint="hh:mm" />
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Reminder: "/>
+
+            <EditText
+                android:id="@+id/inputReminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="No reminder" />
+        </TableRow>
+
     </TableLayout>
 
     <TableLayout

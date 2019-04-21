@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,11 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
 
     private EventRepository eventRepository;
+    private MyNotificationHandler notificationHandler;
 
     private CalendarView calendarView;
     private ListView listDailyEvents;
 
-    private Date selectedDate;
+    private LocalDate selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +42,17 @@ public class MainActivity extends AppCompatActivity {
 
         eventRepository.setContext(this);
         eventRepository = EventRepository.getInstance();
-        selectedDate = new Date();
+
+        notificationHandler.setContext(this);
+        notificationHandler = MyNotificationHandler.getInstance();
+
+        selectedDate = LocalDate.now();
 
         calendarView = (CalendarView) findViewById(R.id.calendarView);
         listDailyEvents = (ListView) findViewById(R.id.listDailyEvents);
 
         setupListeners();
-        updateEventInfo(new Date());
+        updateEventInfo(selectedDate);
     }
 
     @Override
@@ -77,14 +83,19 @@ public class MainActivity extends AppCompatActivity {
     private void setupListeners() {
 
         calendarView.setOnDateChangeListener((@NonNull CalendarView view, int year, int month, int dayOfMonth) -> {
-            Debug.printConsole(TAG, "setupListeners", "Day: " + dayOfMonth, 3);
-            selectedDate = new GregorianCalendar(year, month, dayOfMonth).getTime();
+            Debug.printConsole(TAG, "setupListeners", "Month: " + month, 3);
+            selectedDate = LocalDate.of(year, month + 1, dayOfMonth);
+            Debug.printConsole(TAG, "setOnChangeListener", "Changed: " + selectedDate.toString(), 2);
             updateEventInfo(selectedDate);
         });
 
     }
 
-    private void updateEventInfo(Date date) {
+    private void updateWeekNumber() {
+
+    }
+
+    private void updateEventInfo(LocalDate date) {
 
         List<Event> eventsByDate = eventRepository.findByDate(date);
 
