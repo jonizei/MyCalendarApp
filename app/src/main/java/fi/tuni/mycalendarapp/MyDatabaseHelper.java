@@ -16,6 +16,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        Debug.printConsole(TAG, "onCreate", "onCreate called", 1);
+
         try {
             db.execSQL(EventDatabaseAdapter.DATABASE_CREATE);
         } catch(Exception e) {

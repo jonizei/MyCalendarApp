@@ -5,6 +5,7 @@ import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,7 +23,6 @@ public class EventRepository {
 
     private EventRepository() {
         eventDatabaseAdapter = new EventDatabaseAdapter(context);
-
 
         /*
         eventDatabaseAdapter.insertEvent(new Event("Test", "Desc", new Date(), new Time(), new EventType()));
@@ -65,6 +65,7 @@ public class EventRepository {
             tmpEvent.setDate(event.getDate());
             tmpEvent.setTime(event.getTime());
             tmpEvent.setEventType(event.getEventType());
+            tmpEvent.setNotificationId(event.getNotificationId());
             eventDatabaseAdapter.update(event);
         }
 
@@ -123,7 +124,7 @@ public class EventRepository {
         return tmpEventList;
     }
 
-    public List<Event> findByTime(Time time) {
+    public List<Event> findByTime(LocalTime time) {
 
         List<Event> tmpEventList = new ArrayList<>();
 

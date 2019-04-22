@@ -395,17 +395,29 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void createReminder(MyReminder reminder) {
+
+        int notificationId = 0;
+
+        if(reminder.getEvent().getNotificationId() > 0) {
+            notificationId = reminder.getEvent().getNotificationId();
+        } else {
+            notificationId = notificationCounter++;
+            reminder.getEvent().setNotificationId(notificationId);
+        }
+
+        Debug.printConsole(TAG, "createReminder", "N_ID: " + notificationId, 1);
+        Debug.printConsole(TAG, "createReminder", "EventN_ID: " + reminder.getEvent().getNotificationId(), 1);
+        Debug.printConsole(TAG, "createReminder", "N_Counter: " + notificationCounter, 1);
+
         Intent notifyIntent = new Intent(this, MyReminderReceiver.class);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("event", reminder.getEvent());
         notifyIntent.putExtra("KEY_TODO", bundle);
-        notifyIntent.putExtra("KEY_ID", notificationCounter);
+        notifyIntent.putExtra("KEY_ID", notificationId);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQ_CODE + notificationCounter, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQ_CODE + notificationId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        notificationCounter++;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

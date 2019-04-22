@@ -17,6 +17,7 @@ public class Event implements Parcelable {
     private LocalDate date;
     private LocalTime time;
     private EventType eventType;
+    private int notificationId;
 
     public Event() {
         eventType = new EventType();
@@ -124,5 +125,13 @@ public class Event implements Parcelable {
         }
 
     };
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
+    }
 
 }

@@ -1,5 +1,6 @@
 package fi.tuni.mycalendarapp;
 
+import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -19,8 +20,8 @@ public class EventDatabaseAdapter {
 
     private static final String DATABASE_NAME = "database.db";
     private static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_CREATE = "CREATE TABLE IF NOT EXISTS EVENT_DATA(ID integer primary key autoincrement, NAME text, DESCRIPTION text, DATE text, TIME text, LABEL_NAME text, LABEL_COLOR text);";
-    public static final String DATABASE_REMOVE = "DROP TABLE IF EXISTS eventData;";
+    public static final String DATABASE_CREATE = "CREATE TABLE IF NOT EXISTS EVENT_DATA(ID integer primary key autoincrement, NAME text, DESCRIPTION text, DATE text, TIME text, LABEL_NAME text, LABEL_COLOR text, N_ID integer);";
+    public static final String DATABASE_REMOVE = "DROP TABLE EVENT_DATA;";
 
     public static final String SELECT_ALL_EVENTS = "SELECT * FROM EVENT_DATA";
     public static final String DELETE_ALL_EVENTS = "DELETE FROM EVENT_DATA";
@@ -67,6 +68,7 @@ public class EventDatabaseAdapter {
             newValues.put("TIME", event.getTime().toString());
             newValues.put("LABEL_NAME", event.getEventType().getName());
             newValues.put("LABEL_COLOR", event.getEventType().getColorCode());
+            newValues.put("N_ID", event.getNotificationId());
 
             database = dbHelper.getWritableDatabase();
             result = database.insert("EVENT_DATA", null, newValues);
@@ -121,6 +123,10 @@ public class EventDatabaseAdapter {
             tmpEventType.setColorCode(c.getString(c.getColumnIndex("LABEL_COLOR")));
 
             tmpEvent.setEventType(tmpEventType);
+
+            tmpEvent.setNotificationId(Integer.parseInt(c.getString(c.getColumnIndex("N_ID"))));
+            //Debug.printConsole(TAG, "getAllEvents", "N_ID: " + c.getString(7), 2);
+
             eventList.add(tmpEvent);
             //Debug.printConsole(TAG, "getAllEvents", "Date: " + c.getString(c.getColumnIndex("DATE")), 1);
         }
@@ -137,11 +143,22 @@ public class EventDatabaseAdapter {
         newValues.put("TIME", event.getTime().toString());
         newValues.put("LABEL_NAME", event.getEventType().getName());
         newValues.put("LABEL_COLOR", event.getEventType().getColorCode());
+        newValues.put("N_ID", event.getNotificationId());
 
         String where = "ID=?";
         database = dbHelper.getWritableDatabase();
         database.update("EVENT_DATA", newValues, where, new String[]{"" + event.getId()});
 
+    }
+
+    public void removeDatabase() {
+        database = dbHelper.getWritableDatabase();
+
+        try {
+            database.execSQL(DATABASE_REMOVE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
