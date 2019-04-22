@@ -10,12 +10,29 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/**
+ * This class is used for showing EventTypes in a list view
+ */
 public class EventTypesAdapter extends ArrayAdapter<EventType> {
 
+    /**
+     * Constructor for EventTypesAdapter
+     *
+     * @param context Application context
+     * @param eventTypeList List of eventTypes which will be shown in the list
+     */
     public EventTypesAdapter(Context context, List<EventType> eventTypeList) {
         super(context, 0, eventTypeList);
     }
 
+    /**
+     * This method builds the single eventType layout
+     *
+     * @param position EventType object position in the list
+     * @param convertView Layout view
+     * @param parent ListView which holds all the views
+     * @return Layout view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

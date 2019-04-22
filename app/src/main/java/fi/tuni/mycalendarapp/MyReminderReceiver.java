@@ -6,10 +6,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.JobIntentService;
 
+/**
+ * This class listens when its time to show reminder notification
+ */
 public class MyReminderReceiver extends BroadcastReceiver {
 
+    /**
+     * Classe's tag used for debugging
+     */
     private static final String TAG = "MyReminderReceiver";
 
+    /**
+     * This triggers when receives a broadcast then it starts MyReminderService
+     *
+     * @param context Application context
+     * @param intent Intent that contains data
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 

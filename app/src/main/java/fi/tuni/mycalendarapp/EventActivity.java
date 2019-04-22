@@ -35,24 +35,74 @@ import java.util.Locale;
 
 public class EventActivity extends AppCompatActivity {
 
+    /**
+     * classes tag used in debugging
+     */
     private final String TAG = "EventActivity";
 
+    /**
+     * EventRepository object
+     */
     private EventRepository eventRepository;
 
+    /**
+     * Integer used in reminders
+     */
     private static int NOTIFICATION_REQ_CODE = 10;
+
+    /**
+     * Integer for identifying notifications
+     */
     private static int notificationCounter = 1;
 
+    /**
+     * Name input field
+     */
     private EditText inputName;
+
+    /**
+     * Description input field
+     */
     private EditText inputDesc;
+
+    /**
+     * Date input field
+     */
     private EditText inputDate;
+
+    /**
+     * Time input field
+     */
     private EditText inputTime;
+
+    /**
+     * Field to show color
+     */
     private TextView showColor;
+
+    /**
+     * Button for choosing color
+     */
     private Button inputColor;
+
+    /**
+     * Button for saving event
+     */
     private Button btnSave;
+
+    /**
+     * Input field for reminder
+     */
     private EditText inputReminder;
 
+    /**
+     * Dialog object
+     */
     private Dialog dialog;
 
+    /**
+     * Enumerable for identifying dialogs
+     */
     private enum DialogType {
         DATE,
         TIME,
@@ -60,20 +110,50 @@ public class EventActivity extends AppCompatActivity {
         REMINDER
     }
 
+    /**
+     * Event date
+     */
     private LocalDate eventDate;
+
+    /**
+     * Event time
+     */
     private LocalTime eventTime;
+
+    /**
+     * Event type
+     */
     private EventType eventType;
+
+    /**
+     * Time and Date for reminder
+     */
     private LocalDateTime remindTime;
 
+    /**
+     * Enumerable for identifying is user editing or creating event
+     */
     public enum Mode {
         CREATE,
         EDIT
     }
 
+    /**
+     * Current mode
+     */
     private Mode currentMode = Mode.CREATE;
 
+    /**
+     * Event Object
+     */
     private Event eventObject = null;
 
+    /**
+     * This method initializes all input field values and default values,
+     * depending which mode is on
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +208,9 @@ public class EventActivity extends AppCompatActivity {
         setListeners();
     }
 
+    /**
+     * Sets listeners for input fields and buttons
+     */
     private void setListeners() {
 
         inputDate.setOnFocusChangeListener((View view, boolean hasFocus) -> {
@@ -160,30 +243,48 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens date picker
+     */
     public void pickDate() {
         Debug.printConsole(TAG, "pickDate", "pickDate called", 1);
         dialog = createDialog(DialogType.DATE);
         dialog.show();
     }
 
+    /**
+     * Opens time picker
+     */
     public void pickTime() {
         Debug.printConsole(TAG, "pickTime", "pickTime called", 1);
         dialog = createDialog(DialogType.TIME);
         dialog.show();
     }
 
+    /**
+     * Opens label color picker
+     */
     public void pickColor() {
         Debug.printConsole(TAG, "pickColor", "pickColor called", 1);
         dialog = createDialog(DialogType.COLOR);
         dialog.show();
     }
 
+    /**
+     * Opens reminder time picker
+     */
     public void pickReminder() {
         Debug.printConsole(TAG, "pickReminder", "pickReminder called", 1);
         dialog = createDialog(DialogType.REMINDER);
         dialog.show();
     }
 
+    /**
+     * Builds dialog depending on the DialogType
+     *
+     * @param type Value that determines which dialog will be built
+     * @return Dialog object
+     */
     public Dialog createDialog(DialogType type) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -357,6 +458,10 @@ public class EventActivity extends AppCompatActivity {
         return builder.create();
     }
 
+    /**
+     * This method builds the event from given values,
+     * saves it to the database and returns to previous activity
+     */
     public void saveEvent() {
         Event tmpEvent = new Event();
         tmpEvent.setName(inputName.getText().toString());
@@ -381,6 +486,11 @@ public class EventActivity extends AppCompatActivity {
         goBack(true);
     }
 
+    /**
+     * This returns result for the activity that started this activity
+     *
+     * @param status Tells if event was created/modified or not
+     */
     private void goBack(boolean status) {
         Intent i = new Intent();
         i.putExtra("status", status);
@@ -388,12 +498,20 @@ public class EventActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * This button goes back to the previous activity if back button is pressed
+     */
     @Override
     public void onBackPressed() {
         goBack(false);
         super.onBackPressed();
     }
 
+    /**
+     * This sets reminder for the event
+     *
+     * @param reminder MyReminder Object which contains all needed values to create reminder
+     */
     private void createReminder(MyReminder reminder) {
 
         int notificationId = 0;
@@ -404,10 +522,6 @@ public class EventActivity extends AppCompatActivity {
             notificationId = notificationCounter++;
             reminder.getEvent().setNotificationId(notificationId);
         }
-
-        Debug.printConsole(TAG, "createReminder", "N_ID: " + notificationId, 1);
-        Debug.printConsole(TAG, "createReminder", "EventN_ID: " + reminder.getEvent().getNotificationId(), 1);
-        Debug.printConsole(TAG, "createReminder", "N_Counter: " + notificationCounter, 1);
 
         Intent notifyIntent = new Intent(this, MyReminderReceiver.class);
 

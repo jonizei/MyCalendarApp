@@ -11,29 +11,51 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class is repository for events and it communicates with the database
+ */
 public class EventRepository {
 
+    /**
+     * Classe's tag used for debugging
+     */
     private static final String TAG = "EventRepository";
 
+    /**
+     * EventRepository instance
+     */
     private static EventRepository repository;
+
+    /**
+     * EventDatabase
+     */
     private EventDatabaseAdapter eventDatabaseAdapter;
+
+    /**
+     * Application context
+     */
     private static Context context;
 
+    /**
+     * List of all the events
+     */
     private List<Event> eventList;
 
+    /**
+     * Constructor for the EventRepository.
+     * Initializes EventDatabaseAdapter and eventList.
+     */
     private EventRepository() {
         eventDatabaseAdapter = new EventDatabaseAdapter(context);
-
-        /*
-        eventDatabaseAdapter.insertEvent(new Event("Test", "Desc", new Date(), new Time(), new EventType()));
-        eventDatabaseAdapter.insertEvent(new Event("Test2", "Desc2", new Date(), new Time(), new EventType("Urgent", "#f53c14")));
-        eventDatabaseAdapter.insertEvent(new Event("Test3", "Desc3", new Date(), new Time(), new EventType("Important", "#fc890e")));
-        eventDatabaseAdapter.insertEvent(new Event("Test4", "Desc4", new Date(), new Time(), new EventType("No hurry", "#1ee315")));
-         */
 
         eventList = eventDatabaseAdapter.getAllEvents();
     }
 
+    /**
+     * Returns EventRepository instance if it has already been initialized
+     *
+     * @return EventRepository instance
+     */
     public static EventRepository getInstance() {
         if(repository == null) {
             repository = new EventRepository();
@@ -42,10 +64,20 @@ public class EventRepository {
         return repository;
     }
 
+    /**
+     * Set application context
+     *
+     * @param ctx Application context
+     */
     public static void setContext(Context ctx) {
         context = ctx;
     }
 
+    /**
+     * Saves event to database and add it to the eventList
+     *
+     * @param event Event to be saved
+     */
     public void save(Event event) {
         long tmpId = eventDatabaseAdapter.insertEvent(event);
         if(tmpId != -1) {
@@ -54,6 +86,11 @@ public class EventRepository {
         }
     }
 
+    /**
+     * Updates event's values to the database
+     *
+     * @param event Event to be updated
+     */
     public void update(Event event) {
 
         Event tmpEvent = findById(event.getId());
@@ -71,15 +108,31 @@ public class EventRepository {
 
     }
 
+    /**
+     * Returns all events
+     *
+     * @return List of Events
+     */
     public List<Event> fetchAll() {
         return eventList;
     }
 
+    /**
+     * Deletes event from the eventList and the database
+     *
+     * @param event Event to be deleted
+     */
     public void delete(Event event) {
         eventList.remove(event);
         eventDatabaseAdapter.deleteEvent(event.getId());
     }
 
+    /**
+     * Tries to find event from the eventList by its id
+     *
+     * @param id Events id
+     * @return Event object which can be null if not found from the eventList
+     */
     public Event findById(long id) {
 
         Event tmpEvent = null;
@@ -94,6 +147,12 @@ public class EventRepository {
         return tmpEvent;
     }
 
+    /**
+     * Tries to find events from the eventList by their name
+     *
+     * @param name Events name
+     * @return List of Events which contains all founded events
+     */
     public List<Event> findByName(String name) {
 
         List<Event> tmpEventList = new ArrayList<>();
@@ -107,6 +166,12 @@ public class EventRepository {
         return tmpEventList;
     }
 
+    /**
+     * Tries to find events from the eventList by their date
+     *
+     * @param date Events date
+     * @return List of Events which contains founded events
+     */
     public List<Event> findByDate(LocalDate date) {
 
         List<Event> tmpEventList = new ArrayList<>();
@@ -124,6 +189,12 @@ public class EventRepository {
         return tmpEventList;
     }
 
+    /**
+     * Tries to found events from the eventList by their time
+     *
+     * @param time Events time
+     * @return List of Event which contains founded events
+     */
     public List<Event> findByTime(LocalTime time) {
 
         List<Event> tmpEventList = new ArrayList<>();
@@ -137,6 +208,9 @@ public class EventRepository {
         return tmpEventList;
     }
 
+    /**
+     * Closes EventRepository and EventDatabaseAdapter
+     */
     public void close() {
         eventDatabaseAdapter.close();
     }

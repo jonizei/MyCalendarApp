@@ -14,47 +14,93 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class is used for handling the database
+ */
 public class EventDatabaseAdapter {
 
+    /**
+     * Classes tag for debugging
+     */
     private final static String TAG = "EventDatabaseAdapter";
 
+    /**
+     * Database name
+     */
     private static final String DATABASE_NAME = "database.db";
+
+    /**
+     * Database version
+     */
     private static final int DATABASE_VERSION = 1;
+
+    /**
+     * Database create table SQL query
+     */
     public static final String DATABASE_CREATE = "CREATE TABLE IF NOT EXISTS EVENT_DATA(ID integer primary key autoincrement, NAME text, DESCRIPTION text, DATE text, TIME text, LABEL_NAME text, LABEL_COLOR text, N_ID integer);";
+
+    /**
+     * Database drop table SQL query
+     */
     public static final String DATABASE_REMOVE = "DROP TABLE EVENT_DATA;";
 
+    /**
+     * Database select all from table SQL query
+     */
     public static final String SELECT_ALL_EVENTS = "SELECT * FROM EVENT_DATA";
+
+    /**
+     * Database delete all from table SQL query
+     */
     public static final String DELETE_ALL_EVENTS = "DELETE FROM EVENT_DATA";
 
-    private static final String QUERY_OK = "OK";
-    private static final String QUERY_FAILED = "FAILED";
-
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
+    /**
+     * SQLiteDatabase object
+     */
     public static SQLiteDatabase database;
 
+    /**
+     * Application context
+     */
     private final Context context;
 
+    /**
+     * MyDatabaseHelper object
+     */
     private static MyDatabaseHelper dbHelper;
 
+    /**
+     * Constructor for EventDatabaseAdapter
+     *
+     * @param context Application context
+     */
     public EventDatabaseAdapter(Context context) {
         this.context = context;
         dbHelper = new MyDatabaseHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public EventDatabaseAdapter open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-        return this;
-    }
-
+    /**
+     * Closes database connection
+     */
     public void close() {
         database.close();
     }
 
+    /**
+     * Returns database instance
+     *
+     * @return SqlLiteDatabase instance
+     */
     public SQLiteDatabase getDatabaseInstance() {
         return database;
     }
 
+    /**
+     * Inserts event into the database
+     *
+     * @param event Event object
+     * @return long last inserted event id
+     */
     public long insertEvent(Event event) {
 
         long result = -1;
@@ -81,17 +127,31 @@ public class EventDatabaseAdapter {
         return result;
     }
 
+    /**
+     * Deletes event by id
+     *
+     * @param eventId Id of the event
+     */
     public void deleteEvent(long eventId) {
         database = dbHelper.getWritableDatabase();
         String where = "ID=?";
         int deletedEntries = database.delete("EVENT_DATA", where, new String[]{"" + eventId});
     }
 
+    /**
+     * Deletes all events from the table
+     */
     public void deleteAllEvents() {
         database = dbHelper.getWritableDatabase();
          database.delete("EVENT_DATA", null, null);
     }
 
+    /**
+     * Fetches all events from the database, puts the to a list
+     * and returns them
+     *
+     * @return list which contains all events
+     */
     public List<Event> getAllEvents() {
 
         Debug.printConsole(TAG, "getAllEvents", "fetching events", 1);
@@ -134,6 +194,11 @@ public class EventDatabaseAdapter {
         return eventList;
     }
 
+    /**
+     * Updates existing event's values
+     *
+     * @param event Event to be modified
+     */
     public void update(Event event) {
 
         ContentValues newValues = new ContentValues();
@@ -149,16 +214,6 @@ public class EventDatabaseAdapter {
         database = dbHelper.getWritableDatabase();
         database.update("EVENT_DATA", newValues, where, new String[]{"" + event.getId()});
 
-    }
-
-    public void removeDatabase() {
-        database = dbHelper.getWritableDatabase();
-
-        try {
-            database.execSQL(DATABASE_REMOVE);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 }

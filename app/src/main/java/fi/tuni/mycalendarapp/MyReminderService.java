@@ -10,16 +10,38 @@ import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+/**
+ * This class handles notifications when its time to remind
+ */
 public class MyReminderService extends JobIntentService {
 
+    /**
+     * Classe's tag for debugging
+     */
     private final static String TAG = "MyReminderService";
+
+    /**
+     * Notification channel id
+     */
     private final static String CHANNEL_ID = "EventChannel";
+
+    /**
+     * Notification request code
+     */
     private final static int NOTIFICATION_REQ_CODE = 10;
 
+    /**
+     * Constructor for MyReminderService
+     */
     public MyReminderService() {
         Debug.printConsole(TAG, "Constructor", "Created", 1);
     }
 
+    /**
+     * This method handles showing the notifications
+     *
+     * @param intent Intent which contains data about event
+     */
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
 

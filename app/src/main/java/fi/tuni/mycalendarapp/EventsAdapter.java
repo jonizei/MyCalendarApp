@@ -12,18 +12,45 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/**
+ * This is an adapter that is used in a list view to show custom layout
+ */
 public class EventsAdapter extends ArrayAdapter<Event> {
 
+    /**
+     * Classe's tag used in debugging
+     */
     private static final String TAG = "EventsAdapter";
 
+    /**
+     * EventRepository object
+     */
     private EventRepository eventRepository;
+
+    /**
+     * EventListActivity object
+     */
     private EventListActivity listActivity;
 
+    /**
+     * Constructor for EventsAdapter
+     *
+     * @param listActivity Activity that uses the list
+     * @param events List of Events used in the list
+     */
     public EventsAdapter(EventListActivity listActivity, List<Event> events) {
         super(listActivity,0, events);
         this.listActivity = listActivity;
     }
 
+    /**
+     * This method builds the single event layout
+     *
+     * @param position Event-object position in the list
+     * @param convertView Layout view
+     * @param parent ListView which holds all the views
+     * @return Layout view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

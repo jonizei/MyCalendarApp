@@ -13,14 +13,36 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class is used for showing events in a list view
+ */
 public class EventListActivity extends AppCompatActivity {
 
+    /**
+     * Classe's tag
+     */
     private static final String TAG = "EventListActivity";
+
+    /**
+     * Request code for the resultActivity
+     */
     private static final int REQUEST_CODE = 1;
 
+    /**
+     * EventRepository object
+     */
     private EventRepository eventRepository;
+
+    /**
+     * Date which determines which events needs to be shown
+     */
     private LocalDate selectedDate;
 
+    /**
+     * Initializes the EventListActivity
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +63,9 @@ public class EventListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Updates the list view
+     */
     public void updateList() {
 
         List<Event> eventList = eventRepository.findByDate(selectedDate);
@@ -52,6 +77,11 @@ public class EventListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Opens EventActivity in Edit mode
+     *
+     * @param event Event to be modified
+     */
     public void editEvent(Event event) {
         Intent i = new Intent(this, EventActivity.class);
         i.putExtra("mode", "edit");
@@ -59,6 +89,13 @@ public class EventListActivity extends AppCompatActivity {
         startActivityForResult(i, REQUEST_CODE);
     }
 
+    /**
+     * Gets result from resultActivities
+     *
+     * @param requestCode integer that shows which request code was used
+     * @param resultCode integers that shows the status
+     * @param data Intent which contains data from resultActivity
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK) {
             boolean status = data.getBooleanExtra("status", false);
@@ -71,6 +108,9 @@ public class EventListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Triggers when user returns to this activity and updates the list view
+     */
     @Override
     public void onResume() {
         super.onResume();

@@ -12,12 +12,28 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
+/**
+ * This is an adapter that is used in a list view to show custom layout for daily events
+ */
 public class DailyEventsAdapter extends ArrayAdapter<Event> {
 
+    /**
+     * This is the constructor
+     * @param context Application context
+     * @param eventList List of Event-objects that are used to build the list view
+     */
     public DailyEventsAdapter(Context context, List<Event> eventList) {
         super(context, 0, eventList);
     }
 
+    /**
+     * This method builds the single event layout
+     *
+     * @param position Event-object position in the list
+     * @param convertView Layout view
+     * @param parent ListView which holds all the views
+     * @return Layout view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

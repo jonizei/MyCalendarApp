@@ -26,23 +26,61 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This class is the main activity
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Classe's tag used for debugging
+     */
     private final String TAG = "MainActivity";
 
+    /**
+     * Integer for identify event creation result
+     */
     private static final int REQUEST_CODE_CREATE = 1;
+
+    /**
+     * Integer for identify event modification result
+     */
     private static final int REQUEST_CODE_EDIT = 2;
 
+    /**
+     * EventRepository object
+     */
     private EventRepository eventRepository;
-    private MyNotificationHandler notificationHandler;
 
+    /**
+     * Field that shows week number
+     */
     private TextView txtWeekNumber;
+
+    /**
+     * CalendarView object
+     */
     private CalendarView calendarView;
+
+    /**
+     * ListView object
+     */
     private ListView listDailyEvents;
 
+    /**
+     * Selected date in calendarView
+     */
     private LocalDate selectedDate;
+
+    /**
+     * Selected week in calendarView
+     */
     private int selectedWeek;
 
+    /**
+     * This method initializes all input field values and default values
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
         eventRepository.setContext(this);
         eventRepository = EventRepository.getInstance();
-
-        notificationHandler.setContext(this);
-        notificationHandler = MyNotificationHandler.getInstance();
 
         selectedDate = LocalDate.now();
 
@@ -71,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Creates options menu
+     *
+     * @param menu Menu object
+     * @return boolean that tells the outcome
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -78,6 +119,12 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Triggers if item in options is clicked
+     *
+     * @param item Clicked menu item
+     * @return boolean that tells the outcome
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
@@ -91,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Sets listener for calendarView
+     */
     private void setupListeners() {
 
         calendarView.setOnDateChangeListener((@NonNull CalendarView view, int year, int month, int dayOfMonth) -> {
@@ -103,6 +153,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Updates week number depending on the date
+     *
+     * @param date Selected date
+     */
     private void updateWeekNumber(LocalDate date) {
         TemporalField woy = WeekFields.of(Locale.GERMAN).weekOfWeekBasedYear();
         selectedWeek = date.get(woy);
@@ -110,6 +165,11 @@ public class MainActivity extends AppCompatActivity {
         txtWeekNumber.setText("Week: " + selectedWeek);
     }
 
+    /**
+     * Updates Daily event list depending on the date
+     *
+     * @param date Selected date
+     */
     private void updateEventInfo(LocalDate date) {
 
         List<Event> eventsByDate = eventRepository.findByDate(date);
@@ -129,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Opens event activity in create mode
+     */
     public void addEvent() {
         Intent i = new Intent(this, EventActivity.class);
         i.putExtra("mode", "create");
@@ -136,6 +199,11 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, REQUEST_CODE_CREATE);
     }
 
+    /**
+     * Opens event activity in edit mode
+     *
+     * @param event Event to be modified
+     */
     public void editEvent(Event event) {
         Intent i = new Intent(this, EventActivity.class);
         i.putExtra("mode", "edit");
@@ -143,12 +211,23 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, REQUEST_CODE_EDIT);
     }
 
+    /**
+     * Triggers when user returs to the activity
+     * and updates daily event list
+     */
     @Override
     public void onResume() {
         super.onResume();
         updateEventInfo(selectedDate);
     }
 
+    /**
+     * Get results from result activities and separates results with requestCode
+     *
+     * @param requestCode Identifies the request
+     * @param resultCode Status for the result
+     * @param data Intent that contains data from result activity
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK) {
             boolean status = data.getBooleanExtra("status", false);
@@ -173,12 +252,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Opens EventListActivity
+     *
+     * @param v Current activity
+     */
     public void viewEvents(View v) {
         Intent i = new Intent(this, EventListActivity.class);
         i.putExtra("date", selectedDate);
         startActivity(i);
     }
 
+    /**
+     * Triggers when class is being destroyed
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
