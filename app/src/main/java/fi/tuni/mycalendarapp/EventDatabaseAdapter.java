@@ -16,6 +16,9 @@ import java.util.List;
 
 /**
  * This class is used for handling the database
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class EventDatabaseAdapter {
 

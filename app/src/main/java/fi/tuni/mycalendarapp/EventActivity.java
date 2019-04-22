@@ -33,6 +33,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This class is used for creating and modifying events
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
+ */
 public class EventActivity extends AppCompatActivity {
 
     /**

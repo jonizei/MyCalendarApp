@@ -13,6 +13,9 @@ import java.util.List;
 
 /**
  * This class is repository for events and it communicates with the database
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class EventRepository {
 

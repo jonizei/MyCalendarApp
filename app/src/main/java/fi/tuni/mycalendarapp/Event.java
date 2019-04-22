@@ -11,6 +11,9 @@ import java.util.Date;
 
 /**
  * This class represents a event that is used in the calendar
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class Event implements Parcelable {
 

@@ -12,6 +12,9 @@ import android.support.v4.app.NotificationManagerCompat;
 
 /**
  * This class handles notifications when its time to remind
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class MyReminderService extends JobIntentService {
 

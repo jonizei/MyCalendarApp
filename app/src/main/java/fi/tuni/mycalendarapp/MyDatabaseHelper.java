@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 
 /**
  * This class is used for creating and updating database
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 

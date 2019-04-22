@@ -28,6 +28,9 @@ import java.util.Locale;
 
 /**
  * This class is the main activity
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class MainActivity extends AppCompatActivity {
 

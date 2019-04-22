@@ -2,6 +2,9 @@ package fi.tuni.mycalendarapp;
 
 /**
  * This class represents label of events urgency
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class EventType {
 

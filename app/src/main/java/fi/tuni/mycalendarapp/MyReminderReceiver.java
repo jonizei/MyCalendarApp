@@ -8,6 +8,9 @@ import android.support.v4.app.JobIntentService;
 
 /**
  * This class listens when its time to show reminder notification
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class MyReminderReceiver extends BroadcastReceiver {
 

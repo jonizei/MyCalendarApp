@@ -14,6 +14,9 @@ import java.util.List;
 
 /**
  * This is an adapter that is used in a list view to show custom layout for daily events
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class DailyEventsAdapter extends ArrayAdapter<Event> {
 

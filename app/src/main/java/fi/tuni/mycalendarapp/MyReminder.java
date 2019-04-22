@@ -8,6 +8,9 @@ import java.util.Date;
 
 /**
  * This class contains required data to create reminder
+ *
+ * @author Joni Koskinen
+ * @version 2019-04-23
  */
 public class MyReminder {
 
