@@ -267,13 +267,17 @@ public class EventActivity extends AppCompatActivity {
 
             String[] reminderList = new String[] {
                 "No reminder",
-                "1 hour",
-                "2 hours",
-                "3 hours",
-                "1 day",
-                "2 days",
-                "3 days",
-                "1 week"
+                    "5 minutes",
+                    "10 minutes",
+                    "15 minutes",
+                    "30 minutes",
+                    "1 hour",
+                    "2 hours",
+                    "3 hours",
+                    "1 day",
+                    "2 days",
+                    "3 days",
+                    "1 week"
             };
 
             builder.setTitle("Choose reminder");
@@ -290,38 +294,58 @@ public class EventActivity extends AppCompatActivity {
                             break;
 
                         case 1:
-                            remindTime = tmpDateTime.minusHours(1);
+                            remindTime = tmpDateTime.minusMinutes(5);
                             inputReminder.setText(reminderList[1]);
                             break;
 
                         case 2:
-                            remindTime = tmpDateTime.minusHours(2);
+                            remindTime = tmpDateTime.minusMinutes(10);
                             inputReminder.setText(reminderList[2]);
                             break;
 
                         case 3:
-                            remindTime = tmpDateTime.minusHours(3);
+                            remindTime = tmpDateTime.minusMinutes(15);
                             inputReminder.setText(reminderList[3]);
                             break;
 
                         case 4:
-                            remindTime = tmpDateTime.minusDays(1);
+                            remindTime = tmpDateTime.minusMinutes(30);
                             inputReminder.setText(reminderList[4]);
                             break;
 
                         case 5:
-                            remindTime = tmpDateTime.minusDays(2);
+                            remindTime = tmpDateTime.minusHours(1);
                             inputReminder.setText(reminderList[5]);
                             break;
 
                         case 6:
-                            remindTime = tmpDateTime.minusDays(3);
+                            remindTime = tmpDateTime.minusHours(2);
                             inputReminder.setText(reminderList[6]);
                             break;
 
                         case 7:
-                            remindTime = tmpDateTime.minusWeeks(1);
+                            remindTime = tmpDateTime.minusHours(3);
                             inputReminder.setText(reminderList[7]);
+                            break;
+
+                        case 8:
+                            remindTime = tmpDateTime.minusDays(1);
+                            inputReminder.setText(reminderList[8]);
+                            break;
+
+                        case 9:
+                            remindTime = tmpDateTime.minusDays(2);
+                            inputReminder.setText(reminderList[9]);
+                            break;
+
+                        case 10:
+                            remindTime = tmpDateTime.minusDays(3);
+                            inputReminder.setText(reminderList[10]);
+                            break;
+
+                        case 11:
+                            remindTime = tmpDateTime.minusWeeks(1);
+                            inputReminder.setText(reminderList[11]);
                             break;
                     }
 

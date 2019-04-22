@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CalendarView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
 
-    private static final int REQUEST_CODE = 1;
+    private static final int REQUEST_CODE_CREATE = 1;
+    private static final int REQUEST_CODE_EDIT = 2;
 
     private EventRepository eventRepository;
     private MyNotificationHandler notificationHandler;
@@ -115,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
         DailyEventsAdapter adapter = new DailyEventsAdapter(this, eventsByDate);
         listDailyEvents.setAdapter(adapter);
 
+        listDailyEvents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event tmpEvent = (Event) parent.getItemAtPosition(position);
+                editEvent(tmpEvent);
+            }
+        });
+
         Debug.printConsole(TAG, "updateEventInfo", "eventsByDate: " + eventsByDate.size(), 1);
 
     }
@@ -123,7 +133,14 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, EventActivity.class);
         i.putExtra("mode", "create");
         i.putExtra("date", selectedDate);
-        startActivityForResult(i, REQUEST_CODE);
+        startActivityForResult(i, REQUEST_CODE_CREATE);
+    }
+
+    public void editEvent(Event event) {
+        Intent i = new Intent(this, EventActivity.class);
+        i.putExtra("mode", "edit");
+        i.putExtra("event", event);
+        startActivityForResult(i, REQUEST_CODE_EDIT);
     }
 
     @Override
@@ -136,10 +153,22 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK) {
             boolean status = data.getBooleanExtra("status", false);
 
-            if(status) {
-                Toast.makeText(this,"Event saved successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this,"Event was not saved", Toast.LENGTH_SHORT).show();
+            if(requestCode == REQUEST_CODE_CREATE) {
+
+                if(status) {
+                    Toast.makeText(this,"Event saved successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this,"Event was not saved", Toast.LENGTH_SHORT).show();
+                }
+
+            } else if(requestCode == REQUEST_CODE_EDIT) {
+
+                if(status) {
+                    Toast.makeText(this,"Event modified successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this,"Event was not modified", Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
     }
