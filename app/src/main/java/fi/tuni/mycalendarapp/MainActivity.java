@@ -18,9 +18,13 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -176,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
     private void updateEventInfo(LocalDate date) {
 
         List<Event> eventsByDate = eventRepository.findByDate(date);
+
+        Collections.sort(eventsByDate);
 
         DailyEventsAdapter adapter = new DailyEventsAdapter(this, eventsByDate);
         listDailyEvents.setAdapter(adapter);

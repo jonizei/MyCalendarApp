@@ -2,6 +2,7 @@ package fi.tuni.mycalendarapp;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -15,7 +16,7 @@ import java.util.Date;
  * @author Joni Koskinen
  * @version 2019-04-23
  */
-public class Event implements Parcelable {
+public class Event implements Parcelable, Comparable {
 
     /**
      * Event's id
@@ -280,4 +281,12 @@ public class Event implements Parcelable {
         return notificationId;
     }
 
+    @Override
+    public int compareTo(@NonNull Object o) {
+
+        Event e = (Event) o;
+        int result = this.time.compareTo(e.getTime());
+
+        return result;
+    }
 }
