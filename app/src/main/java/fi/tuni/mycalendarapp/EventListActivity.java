@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -72,6 +73,8 @@ public class EventListActivity extends AppCompatActivity {
     public void updateList() {
 
         List<Event> eventList = eventRepository.findByDate(selectedDate);
+
+        Collections.sort(eventList);
 
         EventsAdapter adapter = new EventsAdapter(this, eventList);
 
