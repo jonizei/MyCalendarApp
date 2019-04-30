@@ -30,7 +30,7 @@ public class EventDatabaseAdapter {
     /**
      * Database name
      */
-    private static final String DATABASE_NAME = "database.db";
+    private static final String DATABASE_NAME = "event_database.db";
 
     /**
      * Database version

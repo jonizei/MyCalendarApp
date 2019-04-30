@@ -1,6 +1,9 @@
 package fi.tuni.mycalendarapp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,6 +87,16 @@ public class MainActivity extends AppCompatActivity {
     private int selectedWeek;
 
     /**
+     * Notification channel name
+     */
+    private final static String CHANNEL_NAME = "ScEventChannel";
+
+    /**
+     * Notification channel id
+     */
+    private final static String CHANNEL_ID = "sc_event_channel";
+
+    /**
      * This method initializes all input field values and default values
      *
      * @param savedInstanceState
@@ -93,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Debug.loadDebug(this);
+
+        createNotificationChannel();
 
         eventRepository.setContext(this);
         eventRepository = EventRepository.getInstance();
@@ -280,4 +295,20 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         eventRepository.close();
     }
+
+    private void createNotificationChannel() {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
+            channel.setDescription("Channel for Simple Calendar's notifications");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+
+        }
+
+    }
+
 }
